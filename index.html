@@ -36,28 +36,28 @@
         #noBtn { background: #f44336; position: relative; z-index: 1000; }
         @keyframes pulseBtn { 0% { transform: scale(1); } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(76,175,80,0); } 100% { transform: scale(1); } }
 
-        /* --- MAIN CONTENT --- */
-        .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; max-width: 100vw; }
-        .baby-photo { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 8px solid black; animation: heartbeat 4s infinite; }
+        /* --- MAIN CONTENT (Base Sizes) --- */
+        .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; }
+        .baby-photo { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 4px solid rgb(102, 83, 154); animation: heartbeat 4s infinite; }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .heart-img { width: 320px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
         h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; }
         @keyframes shim { to { background-position: 200%; } }
 
-        /* --- SURGICAL MOBILE FIX FOR PHOTOS (Safari/Chrome) --- */
+        /* --- IPHONE "ULTRA-SAFE" RESPONSIVE FIX --- */
         @media (max-width: 600px) {
             .envelope { width: 92vw; height: 62vw; } .envelope h2 { font-size: 15vw; }
             .envelope::before { border-top-width: 32vw; border-left-width: 46vw; border-right-width: 46vw; }
-            .seal { top: 32vw; width: 40px; height: 40px; } .seal::before, .seal::after { width: 40px; height: 40px; }
+            .seal { top: 32vw; width: 40px; height: 40px; } 
             .stamp { width: 25vw; height: 18vw; } 
             
-            /* Tightened gap and widths to ensure they stay on screen */
-            .memories-container { gap: 2vw !important; width: 100vw !important; overflow: hidden; }
-            .baby-photo { width: 28vw !important; height: 28vw !important; border-width: 4px !important; flex-shrink: 0; }
-            .heart-img { width: 35vw !important; flex-shrink: 0; }
+            /* Reduced sizes for 100% safety on iPhone screens */
+            .memories-container { gap: 1vw !important; width: 100vw !important; overflow: hidden; padding: 0 2vw; }
+            .baby-photo { width: 25vw !important; height: 25vw !important; border-width: 3px !important; flex-shrink: 0 !important; }
+            .heart-img { width: 30vw !important; height: auto !important; flex-shrink: 0 !important; }
             
             h1 { font-size: 8vw !important; } 
-            .iphone-player { width: 240px !important; transform: scale(0.85); top: 10px !important; right: 10px !important; }
+            .iphone-player { width: 220px !important; transform: scale(0.85); top: 10px !important; right: 10px !important; }
         }
 
         .particle { position: absolute; pointer-events: none; z-index: 9999; opacity: 0.6; animation: floatUp 10s linear infinite; }
@@ -73,8 +73,8 @@
         <div class="envelope">
             <h2>To Lea.</h2>
             <div class="stamps-container">
-                <div class="stamp"><img src="stamp_arg.png"></div>
-                <div class="stamp"><img src="stamp_leb.png"></div>
+                <div class="stamp"><img src="stamp_arg.png" alt="ARG"></div>
+                <div class="stamp"><img src="stamp_leb.png" alt="LEB"></div>
             </div>
             <div class="seal"></div>
         </div>
