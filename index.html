@@ -8,89 +8,132 @@
     <style>
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #571129; touch-action: manipulation; overflow: hidden; }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129); background-size: 400% 400%; animation: grad 15s ease infinite; }
+        @keyframes grad { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* --- ENVELOPE DESIGN --- */
-        #letter-overlay { position: fixed; inset: 0; background: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
+        /* --- THE ENVELOPE (500px / Top-Left Text) --- */
+        #letter-overlay { position: fixed; inset: 0; background-color: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
         .envelope { width: 500px; height: 345px; background: #d2b48c; border-radius: 6px; box-shadow: 0 50px 100px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
         .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-top: 180px solid rgba(0,0,0,0.12); z-index: 1; }
-        .envelope h2 { font-family: 'Great Vibes', cursive; color: #2d2d2d; font-size: 5rem; position: absolute; top: 10px; left: 20px; z-index: 5; margin: 0; }
-        .stamps-container { position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 5; }
-        .stamp { width: 120px; height: 85px; background: white; border: 1px solid #ddd; padding: 3px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
+        .envelope h2 { font-family: 'Great Vibes', cursive; color: #1b1a1a; font-size: 5rem; position: absolute; top: 15px; left: 25px; z-index: 5; margin: 0; line-height: 1; }
+        
+        /* Horizontal Stamps */
+        .stamps-container { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 5; }
+        .stamp { width: 125px; height: 90px; background: white; border: 1px solid #ddd; padding: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
         .stamp img { width: 100%; height: 100%; object-fit: cover; }
         .seal { position: absolute; top: 180px; left: 50%; width: 55px; height: 55px; background: #b71c1c; transform: translate(-50%, -50%) rotate(-45deg); z-index: 6; }
         .seal::before, .seal::after { content: ""; position: absolute; width: 55px; height: 55px; background: #b71c1c; border-radius: 50%; }
         .seal::before { top: -27px; left: 0; } .seal::after { left: 27px; top: 0; }
 
-        /* --- ANIMATIONS & PARTICLES --- */
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .particle { position: absolute; pointer-events: none; z-index: 9999; opacity: 0.6; animation: floatUp 10s linear infinite; }
-        @keyframes floatUp { 0% { transform: translateY(110vh); opacity: 0; } 20% { opacity: 0.6; } 100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; } }
+        /* --- MUSIC PLAYER --- */
+        .iphone-player { position: fixed; top: 20px; right: 20px; width: 300px; background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 20px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; color: white; }
+        #playerArt { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; }
+        .player-controls { display: flex; gap: 12px; font-size: 22px; cursor: pointer; user-select: none; }
+
+        /* --- BUTTONS (Fixed Shapes) --- */
+        .btn-group { display: flex; justify-content: center; align-items: center; gap: 25px; margin-top: 20px; min-height: 220px; z-index: 100; }
+        button { padding: 15px 45px; font-size: 24px; cursor: pointer; border-radius: 20px; border: none; color: white; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.4); transition: transform 0.2s; }
         #yesBtn { background: #4caf50; animation: pulseBtn 1.5s infinite; }
+        #noBtn { background: #f44336; position: relative; z-index: 1000; }
         @keyframes pulseBtn { 0% { transform: scale(1); } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(76,175,80,0); } 100% { transform: scale(1); } }
 
-        /* --- MAIN CONTENT --- */
-        .memories-container { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; z-index: 10; }
-        .baby-photo { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 8px solid black; animation: heartbeat 4s infinite; }
+        /* --- LIFE & PARTICLES --- */
+        .particle { position: absolute; pointer-events: none; z-index: 9999; opacity: 0.6; animation: floatUp 10s linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 20% { opacity: 0.6; } 100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; } }
+        .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; }
+        .baby-photo { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 4px solid rgb(69, 61, 218); animation: heartbeat 4s infinite; }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .heart-img { width: 320px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
-        h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; z-index: 15; }
+        h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; }
         @keyframes shim { to { background-position: 200%; } }
 
         /* --- MOBILE --- */
         @media (max-width: 600px) {
-            .envelope { width: 92vw; height: 62vw; } .envelope h2 { font-size: 15vw; }
-            .envelope::before { border-top-width: 32vw; border-left-width: 46vw; border-right-width: 46vw; }
-            .seal { top: 32vw; width: 38px; height: 38px; } .seal::before, .seal::after { width: 38px; height: 38px; }
-            .stamp { width: 24vw; height: 16vw; } .baby-photo { width: 30vw !important; height: 30vw !important; }
-            .heart-img { width: 40vw !important; } h1 { font-size: 8vw !important; }
+            .envelope { width: 94vw; height: 64vw; } .envelope h2 { font-size: 16vw; }
+            .envelope::before { border-top-width: 32vw; border-left-width: 47vw; border-right-width: 47vw; }
+            .seal { top: 32vw; width: 40px; height: 40px; } .seal::before, .seal::after { width: 40px; height: 40px; }
+            .stamp { width: 25vw; height: 18vw; } .baby-photo { width: 30vw !important; height: 30vw !important; border-width: 4px !important; }
+            h1 { font-size: 8vw !important; } .iphone-player { width: 240px !important; transform: scale(0.85); top: 10px !important; right: 10px !important; }
         }
 
-        .iphone-player { position: fixed; top: 20px; right: 20px; width: 300px; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 20px; padding: 12px; display: flex; align-items: center; gap: 12px; z-index: 1100; color: #fff; }
-        .btn-group { display: flex; gap: 25px; margin-top: 20px; min-height: 200px; }
-        button { padding: 15px 45px; font-size: 24px; cursor: pointer; border-radius: 20px; border: none; color: #fff; font-weight: bold; }
-        #noBtn { background: #f44336; position: relative; z-index: 1000; }
         .celeb { position: fixed; font-size: 40px; pointer-events: none; z-index: 20000; animation: ex 1.5s forwards; }
-        @keyframes ex { 0% { transform: translate(0,0); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+        @keyframes ex { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
     </style>
 </head>
-<body style="background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129); background-size: 400%; animation: gradientBG 15s infinite;">
-    <div id="flash" style="position:fixed; inset:0; background:#fff; opacity:0; z-index:15000; pointer-events:none;"></div>
-    <div id="letter-overlay" onclick="openLetter()"><div class="envelope"><h2>To Lea.</h2><div class="stamps-container"><div class="stamp"><img src="stamp_arg.png"></div><div class="stamp"><img src="stamp_leb.png"></div></div><div class="seal"></div></div></div>
-    <div class="iphone-player">
-        <img id="art" src="album1.jpg" style="width:60px; height:60px; border-radius:10px;">
-        <div style="flex:1; overflow:hidden;"><div id="t" style="font-weight:700; font-size:15px;">Loving Machine</div><div id="a" style="font-size:13px; opacity:0.8;">Tv Girl</div></div>
-        <div style="display:flex; gap:12px; font-size:22px; cursor:pointer;">
-            <span onclick="skip(-1)">⏮</span><span id="p" onclick="toggle()">▶</span><span onclick="skip(1)">⏭</span>
+<body>
+    <div id="flash" style="position:fixed; inset:0; background:white; opacity:0; z-index:15000; pointer-events:none;"></div>
+    
+    <div id="letter-overlay" onclick="openLetter()">
+        <div class="envelope">
+            <h2>To Lea.</h2>
+            <div class="stamps-container">
+                <div class="stamp"><img src="stamp_arg.png"></div>
+                <div class="stamp"><img src="stamp_leb.png"></div>
+            </div>
+            <div class="seal"></div>
         </div>
-        <audio id="m" src="song1.mp3"></audio>
     </div>
+
+    <div class="iphone-player">
+        <img id="playerArt" src="album1.jpg">
+        <div style="flex:1; overflow:hidden;"><div id="sTitle" style="font-weight:700; font-size:15px; white-space:nowrap;">Loving Machine</div><div id="aName" style="font-size:13px; opacity:0.8;">Tv Girl</div></div>
+        <div class="player-controls">
+            <span onclick="skip(-1)">⏮</span><span id="pIcon" onclick="toggle()">▶</span><span onclick="skip(1)">⏭</span>
+        </div>
+        <audio id="mainAudio" src="song1.mp3"></audio>
+    </div>
+
     <div class="memories-container">
-        <img src="baby-her.jpg" class="baby-photo"><div style="animation: floating 3s infinite;"><img id="sh" src="heart-split.png" class="heart-img"><img id="wh" src="heart-whole.png" style="display:none;" class="heart-img"></div><img src="baby-me.jpg" class="baby-photo">
+        <img src="baby-her.jpg" class="baby-photo">
+        <div style="animation: floating 3s infinite; display:flex; justify-content:center; align-items:center;">
+            <img id="sh" src="heart-split.png" style="width:320px;">
+            <img id="wh" src="heart-whole.png" style="display:none; width:320px;">
+        </div>
+        <img src="baby-me.jpg" class="baby-photo">
     </div>
-    <h1 id="main-title">Will you be my Valentine?</h1>
-    <div class="btn-group"><button id="yesBtn" onclick="celebrate()">Yes</button><button id="noBtn">No</button></div>
+
+    <h1 id="mTitle">Will you be my Valentine?</h1>
+    <div class="btn-group">
+        <button id="yesBtn" onclick="celebrate()">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+
     <script>
-        const audio = document.getElementById('m'), pIcon = document.getElementById('p');
+        const audio = document.getElementById('mainAudio'), pIcon = document.getElementById('pIcon');
         const list = [{t:"Loving Machine", a:"Tv Girl", f:"song1.mp3", i:"album1.jpg"}, {t:"What Once Was", a:"Her's", f:"song2.mp3", i:"album2.jpg"}, {t:"My Kind of Woman", a:"Mac DeMarco", f:"song3.mp3", i:"album3.jpg"}, {t:"Message in a bottle", a:"Taylor Swift", f:"song4.mp3", i:"album4.jpg"}, {t:"You rock my world leaa", a:"Michael Jackson", f:"song5.mp3", i:"album5.jpg"}, {t:"Is it love??", a:"Color out", f:"song6.mp3", i:"album6.jpg"}];
         let idx = 0, yS = 1, nS = 1; audio.volume = 0.3;
+
         function toggle() { if(audio.paused) { audio.play(); pIcon.innerText = "⏸"; } else { audio.pause(); pIcon.innerText = "▶"; } }
-        function skip(d) { idx = (idx+d+list.length)%list.length; audio.src = list[idx].f; document.getElementById('t').innerText=list[idx].t; document.getElementById('a').innerText=list[idx].a; document.getElementById('art').src=list[idx].i; audio.play(); pIcon.innerText="⏸"; }
-        function openLetter() { audio.play(); pIcon.innerText="⏸"; document.getElementById('letter-overlay').style.opacity='0'; setTimeout(()=>{document.getElementById('letter-overlay').style.visibility='hidden';},1000); }
-        function part(ins=false) { const p = document.createElement('div'); p.innerHTML=['✨','💕','☁️','🌸','❤️'][Math.floor(Math.random()*5)]; p.className='particle'; p.style.left=Math.random()*100+'vw'; p.style.fontSize=(Math.random()*30+20)+'px'; if(ins) p.style.bottom=Math.random()*100+'vh'; document.body.appendChild(p); setTimeout(()=>p.remove(),12000); }
-        for(let i=0; i<25; i++) part(true); setInterval(part, 600);
+        function skip(d) { idx=(idx+d+list.length)%list.length; audio.src=list[idx].f; document.getElementById('sTitle').innerText=list[idx].t; document.getElementById('aName').innerText=list[idx].a; document.getElementById('playerArt').src=list[idx].i; audio.play(); pIcon.innerText="⏸"; }
+        function openLetter() { audio.play().catch(()=>{}); pIcon.innerText="⏸"; document.getElementById('letter-overlay').style.opacity='0'; setTimeout(()=>{document.getElementById('letter-overlay').style.visibility='hidden';},1000); }
+        function part(ins=false) { const p = document.createElement('div'); p.innerHTML=['✨','💕','☁️','🌸','❤️'][Math.floor(Math.random()*5)]; p.className='particle'; p.style.left=Math.random()*100+'vw'; p.style.fontSize=(Math.random()*30+20)+'px'; if(ins) p.style.bottom=Math.random()*100+'vh'; document.body.appendChild(p); setTimeout(()=>p.remove(), 12000); }
+        for(let i=0; i<35; i++) part(true); setInterval(part, 500);
+
         const no = document.getElementById('noBtn');
-        const move = () => { const pad=60, x=Math.max(pad, Math.floor(Math.random()*(window.innerWidth-no.offsetWidth-pad))), y=Math.max(pad, Math.floor(Math.random()*(window.innerHeight-no.offsetHeight-pad))); no.style.position='fixed'; no.style.left=x+'px'; no.style.top=y+'px'; yS+=0.3; nS-=0.12; if(nS<0.2) nS=0.2; document.getElementById('yesBtn').style.transform=`scale(${yS})`; no.style.transform=`scale(${nS})`; };
+        const move = () => {
+            const pad=60, x=Math.max(pad, Math.floor(Math.random()*(window.innerWidth-no.offsetWidth-pad))), y=Math.max(pad, Math.floor(Math.random()*(window.innerHeight-no.offsetHeight-pad)));
+            no.style.position='fixed'; no.style.left=x+'px'; no.style.top=y+'px';
+            yS+=0.35; nS-=0.12; if(nS<0.2) nS=0.2; 
+            document.getElementById('yesBtn').style.transform=`scale(${yS})`; no.style.transform=`scale(${nS})`;
+        };
         no.addEventListener('touchstart', e=>{e.preventDefault(); move();}); no.addEventListener('mouseover', move);
+
         function celebrate() {
-            document.getElementById('sh').style.display='none'; document.getElementById('wh').style.display='block'; document.getElementById('main-title').innerText="I love you Lea! ❤️"; document.getElementById('main-title').style.webkitTextFillColor="#fff"; document.getElementById('yesBtn').style.display='none'; no.style.display='none';
-            document.getElementById('flash').style.animation="flashEffect 0.6s forwards"; document.body.style.animation="gradientBG 1.5s infinite";
+            document.getElementById('sh').style.display='none'; document.getElementById('wh').style.display='block'; 
+            document.getElementById('mTitle').innerText="I love you Lea! ❤️"; document.getElementById('mTitle').style.webkitTextFillColor="#fff"; 
+            document.getElementById('yesBtn').style.display='none'; no.style.display='none';
+            document.getElementById('flash').style.animation="flashEffect 0.6s forwards"; document.body.style.animation="grad 1.5s infinite";
             const icons=['💕','💖','🎆','🎉','🥂','🍾','💘','✨','❤️'];
-            for(let i=0; i<120; i++) { setTimeout(() => { const el=document.createElement('div'); el.innerHTML=icons[Math.floor(Math.random()*icons.length)]; el.className='celeb'; el.style.setProperty('--x', (Math.random()-0.5)*window.innerWidth*1.6+'px'); el.style.setProperty('--y', (Math.random()-0.5)*window.innerHeight*1.6+'px'); el.style.left='50%'; el.style.top='50%'; document.body.appendChild(el); setTimeout(()=>el.remove(),1500); }, i*15); }
+            for(let i=0; i<130; i++) { 
+                setTimeout(() => { 
+                    const el=document.createElement('div'); el.innerHTML=icons[Math.floor(Math.random()*icons.length)]; el.className='celeb'; 
+                    el.style.setProperty('--x', (Math.random()-0.5)*window.innerWidth*1.7+'px'); 
+                    el.style.setProperty('--y', (Math.random()-0.5)*window.innerHeight*1.7+'px'); 
+                    el.style.left='50%'; el.style.top='50%'; document.body.appendChild(el); 
+                    setTimeout(()=>el.remove(), 1500); 
+                }, i*12); 
+            }
         }
     </script>
 </body>
 </html>
-</html>
-
-
