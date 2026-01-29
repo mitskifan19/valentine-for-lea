@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Valentine v3.0</title>
+    <title>Valentine v4.0 - Alive</title>
     <style>
-        /* The Secret Sauce for Chrome */
-        * {
-            box-sizing: border-box; 
-        }
+        * { box-sizing: border-box; }
 
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #571129 !important;
+            /* ANIMATED GRADIENT BACKGROUND */
+            background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             touch-action: manipulation;
             overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body {
@@ -26,6 +32,23 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* --- FLOATING BACKGROUND HEARTS --- */
+        .bg-heart {
+            position: absolute;
+            color: rgba(216, 27, 96, 0.2);
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
         .memories-container {
@@ -39,16 +62,23 @@
         }
 
         .baby-photo {
-            width: 200px; /* Reduced base size for Chrome safety */
+            width: 200px;
             height: 200px;
             object-fit: cover;
             border-radius: 50%;
             border: 8px solid black;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            /* PULSE ANIMATION */
+            animation: heartbeat 4s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .heart-wrapper {
-            animation: float 3s ease-in-out infinite;
+            animation: floating 3s ease-in-out infinite;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -58,44 +88,32 @@
         .heart-img {
             width: 300px;
             height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
         }
 
-        /* HARD CHROME/MOBILE OVERRIDE */
+        /* --- TEXT SHIMMER --- */
+        h1 { 
+            color: #ffffff;
+            text-align: center; 
+            font-size: 3rem; 
+            background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
         @media (max-width: 600px) {
             .baby-photo { width: 28vw !important; height: 28vw !important; border-width: 4px !important; }
             .heart-img { width: 35vw !important; }
-            h1 { font-size: 7vw !important; margin-top: 15px !important; }
-            
-            .iphone-player { 
-                width: 70vw !important; 
-                max-width: 280px !important;
-                top: 10px !important; 
-                right: 10px !important; 
-                padding: 10px !important;
-            }
-            #albumArt { width: 12vw !important; height: 12vw !important; max-width: 50px; }
-            #songTitle { font-size: 3.5vw !important; }
-            #artistName { font-size: 3vw !important; }
-            .player-controls { font-size: 5vw !important; gap: 10px !important; }
-            
-            .btn-group { min-height: 120px !important; gap: 15px !important; }
-            button { padding: 12px 25px !important; font-size: 5vw !important; border-radius: 12px !important; }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        h1 { 
-            color: #d81b60; 
-            text-align: center; 
-            font-size: 3rem; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            padding: 0 20px;
-            z-index: 10;
+            h1 { font-size: 7vw !important; }
+            .iphone-player { width: 70vw !important; max-width: 280px !important; }
         }
 
         .btn-group { 
@@ -141,7 +159,7 @@
         .player-controls { display: flex; gap: 12px; font-size: 22px; cursor: pointer; user-select: none; }
 
         .floating-heart {
-            position: fixed; font-size: 30px; pointer-events: none; z-index: 999;
+            position: fixed; font-size: 30px; pointer-events: none; z-index: 9999;
             animation: explode 1.5s ease-out forwards;
         }
 
@@ -213,6 +231,18 @@
         let noScale = 1;
         audio.volume = 0.3;
 
+        // CREATE BACKGROUND HEARTS
+        function spawnBgHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'bg-heart';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 10000);
+        }
+        setInterval(spawnBgHeart, 1000);
+
         window.onload = () => {
             songTitle.innerText = playlist[0].title;
             artistName.innerText = playlist[0].artist;
@@ -266,6 +296,8 @@
             splitHeart.style.display = 'none';
             wholeHeart.style.display = 'block';
             questionText.innerText = "I love you Lea! ❤️";
+            questionText.style.background = "none";
+            questionText.style.webkitTextFillColor = "#ffffff";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
             for (let i = 0; i < 50; i++) { createHeart(); }
