@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Valentine v4.0 - Alive</title>
+    <title>Valentine v5.1 - Full Life</title>
     <style>
         * { box-sizing: border-box; }
 
@@ -12,12 +12,12 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            /* ANIMATED GRADIENT BACKGROUND */
             background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             touch-action: manipulation;
             overflow: hidden;
+            cursor: none;
         }
 
         @keyframes gradientBG {
@@ -34,29 +34,39 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* --- FLOATING BACKGROUND HEARTS --- */
-        .bg-heart {
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(216, 27, 96, 0.15) 0%, rgba(216, 27, 96, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        /* --- BIGGER FLOATING PARTICLES --- */
+        .particle {
             position: absolute;
-            color: rgba(216, 27, 96, 0.2);
-            font-size: 20px;
             pointer-events: none;
             z-index: 0;
+            opacity: 0.5;
             animation: floatUp 10s linear infinite;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
         }
 
         .memories-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
             width: 95%;
             z-index: 5;
         }
@@ -67,8 +77,7 @@
             object-fit: cover;
             border-radius: 50%;
             border: 8px solid black;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            /* PULSE ANIMATION */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             animation: heartbeat 4s ease-in-out infinite;
         }
 
@@ -88,14 +97,13 @@
         .heart-img {
             width: 300px;
             height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
         }
 
-        /* --- TEXT SHIMMER --- */
         h1 { 
             color: #ffffff;
             text-align: center; 
-            font-size: 3rem; 
+            font-size: 3.5rem; 
             background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -110,10 +118,10 @@
         }
 
         @media (max-width: 600px) {
-            .baby-photo { width: 28vw !important; height: 28vw !important; border-width: 4px !important; }
-            .heart-img { width: 35vw !important; }
-            h1 { font-size: 7vw !important; }
-            .iphone-player { width: 70vw !important; max-width: 280px !important; }
+            .baby-photo { width: 30vw !important; height: 30vw !important; }
+            .heart-img { width: 40vw !important; }
+            h1 { font-size: 8vw !important; }
+            #cursor-glow { width: 250px; height: 250px; }
         }
 
         .btn-group { 
@@ -122,19 +130,19 @@
             align-items: center;
             gap: 30px; 
             margin-top: 20px;
-            min-height: 180px;
+            min-height: 200px;
         }
 
         button {
-            padding: 15px 45px;
-            font-size: 24px;
+            padding: 18px 50px;
+            font-size: 26px;
             cursor: pointer;
-            border-radius: 20px;
+            border-radius: 25px;
             border: none;
             color: white;
             font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #yesBtn { background-color: #4caf50; position: relative; z-index: 100; }
@@ -144,22 +152,22 @@
             position: fixed;
             top: 20px; right: 20px; width: 320px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 20px; padding: 16px;
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px; padding: 16px;
             display: flex; align-items: center; gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             z-index: 1100; color: white;
         }
 
-        #albumArt { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
+        #albumArt { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
         .song-info { flex-grow: 1; overflow: hidden; }
-        #songTitle { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #artistName { font-size: 13px; opacity: 0.8; }
-        .player-controls { display: flex; gap: 12px; font-size: 22px; cursor: pointer; user-select: none; }
+        #songTitle { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #artistName { font-size: 14px; opacity: 0.8; }
+        .player-controls { display: flex; gap: 12px; font-size: 24px; cursor: pointer; user-select: none; }
 
         .floating-heart {
-            position: fixed; font-size: 30px; pointer-events: none; z-index: 9999;
+            position: fixed; font-size: 35px; pointer-events: none; z-index: 9999;
             animation: explode 1.5s ease-out forwards;
         }
 
@@ -171,6 +179,7 @@
 </head>
 <body>
 
+    <div id="cursor-glow"></div>
     <div id="overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
 
     <div class="iphone-player">
@@ -210,6 +219,7 @@
         const wholeHeart = document.getElementById('wholeHeart');
         const questionText = document.getElementById('question');
         const overlay = document.getElementById('overlay');
+        const glow = document.getElementById('cursor-glow');
 
         const audio = document.getElementById('mainAudio');
         const playIcon = document.getElementById('playIcon');
@@ -231,17 +241,38 @@
         let noScale = 1;
         audio.volume = 0.3;
 
-        // CREATE BACKGROUND HEARTS
-        function spawnBgHeart() {
-            const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.className = 'bg-heart';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 10000);
+        // --- GLOW CURSOR ---
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // --- BIGGER & INSTANT PARTICLES ---
+        const particles = ['✨', '💕', '☁️', '🌸', '❤️'];
+        function spawnParticle(isInstant = false) {
+            const p = document.createElement('div');
+            p.innerHTML = particles[Math.floor(Math.random() * particles.length)];
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            
+            // Increased Size
+            const size = (Math.random() * 30 + 20) + 'px'; 
+            p.style.fontSize = size;
+            
+            p.style.animationDuration = (Math.random() * 8 + 7) + 's';
+            
+            // If instant, start them at different heights
+            if(isInstant) {
+                p.style.bottom = Math.random() * 100 + 'vh';
+            }
+            
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 12000);
         }
-        setInterval(spawnBgHeart, 1000);
+
+        // Spawn 15 particles immediately on load
+        for(let i=0; i<15; i++) { spawnParticle(true); }
+        setInterval(spawnParticle, 700);
 
         window.onload = () => {
             songTitle.innerText = playlist[0].title;
@@ -270,7 +301,7 @@
         }
 
         const moveButton = () => {
-            const padding = 50;
+            const padding = 60;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
@@ -300,15 +331,15 @@
             questionText.style.webkitTextFillColor = "#ffffff";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-            for (let i = 0; i < 50; i++) { createHeart(); }
+            for (let i = 0; i < 60; i++) { createHeart(); }
         });
 
         function createHeart() {
             const heart = document.createElement('div');
             heart.innerHTML = '💕';
             heart.className = 'floating-heart';
-            const x = (Math.random() - 0.5) * 800;
-            const y = (Math.random() - 0.5) * 800;
+            const x = (Math.random() - 0.5) * 1000;
+            const y = (Math.random() - 0.5) * 1000;
             heart.style.setProperty('--x', x + 'px');
             heart.style.setProperty('--y', y + 'px');
             heart.style.left = '50%';
