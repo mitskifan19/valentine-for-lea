@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Valentine v2.0</title>
+    <title>Valentine v3.0</title>
     <style>
+        /* The Secret Sauce for Chrome */
+        * {
+            box-sizing: border-box; 
+        }
+
         html, body {
             margin: 0;
             padding: 0;
@@ -12,6 +17,7 @@
             height: 100%;
             background-color: #571129 !important;
             touch-action: manipulation;
+            overflow: hidden;
         }
 
         body {
@@ -20,27 +26,25 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
         }
 
-        /* --- MOBILE RESPONSIVE FIXES --- */
         .memories-container {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            width: 90%;
+            width: 95%;
+            z-index: 5;
         }
 
         .baby-photo {
-            width: 250px;
-            height: 250px;
+            width: 200px; /* Reduced base size for Chrome safety */
+            height: 200px;
             object-fit: cover;
             border-radius: 50%;
             border: 8px solid black;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            z-index: 2;
         }
 
         .heart-wrapper {
@@ -48,34 +52,35 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1;
             pointer-events: none;
         }
 
         .heart-img {
-            width: 400px;
+            width: 300px;
             height: auto;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
         }
 
-        /* HARD MOBILE OVERRIDE */
+        /* HARD CHROME/MOBILE OVERRIDE */
         @media (max-width: 600px) {
-            .baby-photo { width: 110px !important; height: 110px !important; border-width: 4px !important; }
-            .heart-img { width: 140px !important; }
-            h1 { font-size: 1.5rem !important; margin-top: 10px !important; }
+            .baby-photo { width: 28vw !important; height: 28vw !important; border-width: 4px !important; }
+            .heart-img { width: 35vw !important; }
+            h1 { font-size: 7vw !important; margin-top: 15px !important; }
+            
             .iphone-player { 
-                width: 220px !important; 
+                width: 70vw !important; 
+                max-width: 280px !important;
                 top: 10px !important; 
                 right: 10px !important; 
-                padding: 8px !important;
-                gap: 8px !important;
+                padding: 10px !important;
             }
-            #albumArt { width: 40px !important; height: 40px !important; }
-            #songTitle { font-size: 11px !important; }
-            #artistName { font-size: 9px !important; }
-            .player-controls { font-size: 16px !important; gap: 8px !important; }
-            .btn-group { min-height: 150px !important; margin-top: 10px !important; }
-            button { padding: 12px 25px !important; font-size: 18px !important; }
+            #albumArt { width: 12vw !important; height: 12vw !important; max-width: 50px; }
+            #songTitle { font-size: 3.5vw !important; }
+            #artistName { font-size: 3vw !important; }
+            .player-controls { font-size: 5vw !important; gap: 10px !important; }
+            
+            .btn-group { min-height: 120px !important; gap: 15px !important; }
+            button { padding: 12px 25px !important; font-size: 5vw !important; border-radius: 12px !important; }
         }
 
         @keyframes float {
@@ -86,24 +91,24 @@
 
         h1 { 
             color: #d81b60; 
-            margin-top: 20px; 
             text-align: center; 
-            font-size: 2.5rem; 
+            font-size: 3rem; 
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            padding: 0 15px;
+            padding: 0 20px;
+            z-index: 10;
         }
 
         .btn-group { 
             display: flex; 
             justify-content: center; 
             align-items: center;
-            gap: 20px; 
+            gap: 30px; 
             margin-top: 20px;
-            min-height: 200px;
+            min-height: 180px;
         }
 
         button {
-            padding: 15px 40px;
+            padding: 15px 45px;
             font-size: 24px;
             cursor: pointer;
             border-radius: 20px;
@@ -114,14 +119,14 @@
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #yesBtn { background-color: #4caf50; }
+        #yesBtn { background-color: #4caf50; position: relative; z-index: 100; }
         #noBtn { background-color: #f44336; position: relative; z-index: 1000; }
 
         .iphone-player {
             position: fixed;
             top: 20px; right: 20px; width: 320px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-radius: 20px; padding: 16px;
             display: flex; align-items: center; gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -133,7 +138,7 @@
         .song-info { flex-grow: 1; overflow: hidden; }
         #songTitle { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #artistName { font-size: 13px; opacity: 0.8; }
-        .player-controls { display: flex; gap: 10px; font-size: 22px; cursor: pointer; user-select: none; }
+        .player-controls { display: flex; gap: 12px; font-size: 22px; cursor: pointer; user-select: none; }
 
         .floating-heart {
             position: fixed; font-size: 30px; pointer-events: none; z-index: 999;
@@ -246,7 +251,7 @@
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
 
-            yesScale += 0.25;
+            yesScale += 0.3;
             noScale -= 0.1;
             if (noScale < 0.2) noScale = 0.2;
 
@@ -263,7 +268,7 @@
             questionText.innerText = "I love you Lea! ❤️";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-            for (let i = 0; i < 45; i++) { createHeart(); }
+            for (let i = 0; i < 50; i++) { createHeart(); }
         });
 
         function createHeart() {
@@ -282,5 +287,3 @@
     </script>
 </body>
 </html>
-</html>
-
