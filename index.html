@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Valentine Card</title>
     <style>
         html, body {
@@ -11,6 +11,7 @@
             width: 100%;
             height: 100%;
             background-color: #571129 !important; /* Your wine red color */
+            touch-action: manipulation;
         }
 
         body {
@@ -34,7 +35,7 @@
             height: 250px;
             object-fit: cover;
             border-radius: 50%;
-            border: 8px solid black; /* Your custom black border */
+            border: 8px solid black;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             z-index: 2;
         }
@@ -45,6 +46,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1;
+            pointer-events: none; /* Mouse passes through heart to button */
         }
 
         .heart-img {
@@ -71,8 +73,10 @@
         .btn-group { 
             display: flex; 
             justify-content: center; 
+            align-items: center;
             gap: 30px; 
             margin-top: 30px;
+            min-height: 250px; /* Room for Yes to grow */
         }
 
         button {
@@ -84,12 +88,18 @@
             color: white;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
         }
 
-        #yesBtn { background-color: #4caf50; }
-        #noBtn { background-color: #f44336; position: relative; }
+        #yesBtn { background-color: #4caf50; z-index: 500; }
+        
+        #noBtn { 
+            background-color: #f44336; 
+            position: relative; 
+            z-index: 1000; /* Stays on top */
+        }
 
-        /* --- IPHONE MUSIC PLAYER (TOP RIGHT) --- */
+        /* Apple Music Player */
         .iphone-player {
             position: fixed;
             top: 20px;    
@@ -105,43 +115,15 @@
             gap: 16px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 1100;
             color: white;
         }
 
-        #albumArt {
-            width: 65px;
-            height: 65px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
-        .song-info {
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        #songTitle {
-            font-size: 16px;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #artistName {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .player-controls {
-            display: flex;
-            gap: 12px;
-            font-size: 22px;
-            cursor: pointer;
-            user-select: none;
-        }
+        #albumArt { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
+        .song-info { flex-grow: 1; overflow: hidden; }
+        #songTitle { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #artistName { font-size: 14px; opacity: 0.8; }
+        .player-controls { display: flex; gap: 12px; font-size: 22px; cursor: pointer; user-select: none; }
 
         .floating-heart {
             position: fixed;
@@ -159,8 +141,10 @@
 </head>
 <body>
 
+    <div id="overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
+
     <div class="iphone-player">
-        <img id="albumArt" src="album1.jpg" alt="Album Art">
+        <img id="albumArt" src="album1.jpg" alt="Art">
         <div class="song-info">
             <div id="songTitle">Loving Machine</div>
             <div id="artistName">Tv Girl</div>
@@ -195,8 +179,8 @@
         const splitHeart = document.getElementById('splitHeart');
         const wholeHeart = document.getElementById('wholeHeart');
         const questionText = document.getElementById('question');
+        const overlay = document.getElementById('overlay');
 
-        // --- MUSIC LOGIC ---
         const audio = document.getElementById('mainAudio');
         const playIcon = document.getElementById('playIcon');
         const songTitle = document.getElementById('songTitle');
@@ -206,41 +190,31 @@
         const playlist = [
             { title: "Loving Machine", artist: "Tv Girl", file: "song1.mp3", art: "album1.jpg" },
             { title: "What Once Was", artist: "Her's", file: "song2.mp3", art: "album2.jpg" },
-            { title: "My Kind of Woman", artist: " Mac DeMarco", file: "song3.mp3", art: "album3.jpg" },
+            { title: "My Kind of Woman", artist: "Mac DeMarco", file: "song3.mp3", art: "album3.jpg" },
             { title: "Message in a bottle", artist: "Taylor Swift", file: "song4.mp3", art: "album4.jpg" },
             { title: "You rock my world leaa", artist: "Michael Jackson", file: "song5.mp3", art: "album5.jpg" },
-            { title: "Is it love?? ", artist: "Color out ", file: "song6.mp3", art: "album6.jpg" }
+            { title: "Is it love??", artist: "Color out", file: "song6.mp3", art: "album6.jpg" }
         ];
+        
         let currentIdx = 0;
-
-        // SET VOLUME TO 30%
+        let yesScale = 1;
+        let noScale = 1;
         audio.volume = 0.3;
 
-        // Initialization
         window.onload = () => {
             songTitle.innerText = playlist[0].title;
             artistName.innerText = playlist[0].artist;
         };
 
-        // AUTO-PLAY WORKAROUND
-        // Starts playing the moment she interacts with the page
-        document.body.addEventListener('mousemove', function startMusic() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.innerText = "⏸";
-            }
-            // Remove listener after first interaction to save memory
-            document.body.removeEventListener('mousemove', startMusic);
+        overlay.addEventListener('click', () => {
+            audio.play().catch(() => {});
+            playIcon.innerText = "⏸";
+            overlay.style.display = 'none';
         });
 
         function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.innerText = "⏸";
-            } else {
-                audio.pause();
-                playIcon.innerText = "▶";
-            }
+            if (audio.paused) { audio.play(); playIcon.innerText = "⏸"; } 
+            else { audio.pause(); playIcon.innerText = "▶"; }
         }
 
         function changeSong(dir) {
@@ -253,25 +227,40 @@
             playIcon.innerText = "⏸";
         }
 
-        // --- INTERACTION LOGIC ---
-        noBtn.addEventListener('mouseover', () => {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        // --- THE DODGING & SCALING LOGIC ---
+        const moveButton = () => {
+            // 1. Position Logic
+            const padding = 60;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
             noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-        });
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // 2. Scaling Logic
+            yesScale += 0.25; // Grows fast
+            noScale -= 0.1;   // Shrinks slow
+            
+            if (noScale < 0.2) noScale = 0.2; // Don't let it vanish completely
+
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noBtn.style.transform = `scale(${noScale})`;
+        };
+
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+        noBtn.addEventListener('mouseover', moveButton);
 
         yesBtn.addEventListener('click', () => {
             splitHeart.style.display = 'none';
             wholeHeart.style.display = 'block';
-            questionText.innerText = "I love you Lea! ❤️";
+            questionText.innerText = "I love you Lea! ❤️ Let's talk more in Chat.";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-
-            for (let i = 0; i < 40; i++) {
-                createHeart();
-            }
+            for (let i = 0; i < 40; i++) { createHeart(); }
         });
 
         function createHeart() {
