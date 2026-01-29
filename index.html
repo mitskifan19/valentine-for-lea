@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Valentine Card</title>
+    <title>Valentine v2.0</title>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #571129 !important; /* Your deep burgundy */
+            background-color: #571129 !important;
             touch-action: manipulation;
         }
 
@@ -23,12 +23,14 @@
             overflow: hidden;
         }
 
-        /* --- LAYOUT SCALING --- */
+        /* --- MOBILE RESPONSIVE FIXES --- */
         .memories-container {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
+            width: 90%;
         }
 
         .baby-photo {
@@ -47,7 +49,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1;
-            pointer-events: none; /* Mouse passes through heart */
+            pointer-events: none;
         }
 
         .heart-img {
@@ -56,26 +58,29 @@
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
         }
 
-        /* MOBILE ADJUSTMENTS */
+        /* HARD MOBILE OVERRIDE */
         @media (max-width: 600px) {
-            .baby-photo { width: 130px; height: 130px; border-width: 4px; }
-            .heart-img { width: 180px; }
-            h1 { font-size: 1.8rem !important; }
+            .baby-photo { width: 110px !important; height: 110px !important; border-width: 4px !important; }
+            .heart-img { width: 140px !important; }
+            h1 { font-size: 1.5rem !important; margin-top: 10px !important; }
             .iphone-player { 
-                width: 240px !important; 
+                width: 220px !important; 
                 top: 10px !important; 
                 right: 10px !important; 
-                padding: 10px !important;
+                padding: 8px !important;
+                gap: 8px !important;
             }
-            #albumArt { width: 45px !important; height: 45px !important; }
-            #songTitle { font-size: 13px !important; }
-            #artistName { font-size: 11px !important; }
-            .player-controls { font-size: 18px !important; }
+            #albumArt { width: 40px !important; height: 40px !important; }
+            #songTitle { font-size: 11px !important; }
+            #artistName { font-size: 9px !important; }
+            .player-controls { font-size: 16px !important; gap: 8px !important; }
+            .btn-group { min-height: 150px !important; margin-top: 10px !important; }
+            button { padding: 12px 25px !important; font-size: 18px !important; }
         }
 
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
         }
 
@@ -83,9 +88,9 @@
             color: #d81b60; 
             margin-top: 20px; 
             text-align: center; 
-            font-size: 3rem; 
+            font-size: 2.5rem; 
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            padding: 0 10px;
+            padding: 0 15px;
         }
 
         .btn-group { 
@@ -98,38 +103,30 @@
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 22px;
+            padding: 15px 40px;
+            font-size: 24px;
             cursor: pointer;
-            border-radius: 15px;
+            border-radius: 20px;
             border: none;
             color: white;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #yesBtn { background-color: #4caf50; }
         #noBtn { background-color: #f44336; position: relative; z-index: 1000; }
 
-        /* --- IPHONE PLAYER --- */
         .iphone-player {
             position: fixed;
-            top: 20px;    
-            right: 20px;  
-            width: 320px;
+            top: 20px; right: 20px; width: 320px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 16px;
+            display: flex; align-items: center; gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            z-index: 1100;
-            color: white;
+            z-index: 1100; color: white;
         }
 
         #albumArt { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
@@ -139,10 +136,7 @@
         .player-controls { display: flex; gap: 10px; font-size: 22px; cursor: pointer; user-select: none; }
 
         .floating-heart {
-            position: fixed;
-            font-size: 30px;
-            pointer-events: none;
-            z-index: 999;
+            position: fixed; font-size: 30px; pointer-events: none; z-index: 999;
             animation: explode 1.5s ease-out forwards;
         }
 
@@ -241,7 +235,7 @@
         }
 
         const moveButton = () => {
-            const padding = 60;
+            const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
@@ -252,8 +246,7 @@
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
 
-            // SCALING LOGIC
-            yesScale += 0.2;
+            yesScale += 0.25;
             noScale -= 0.1;
             if (noScale < 0.2) noScale = 0.2;
 
@@ -270,7 +263,7 @@
             questionText.innerText = "I love you Lea! ❤️";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-            for (let i = 0; i < 40; i++) { createHeart(); }
+            for (let i = 0; i < 45; i++) { createHeart(); }
         });
 
         function createHeart() {
@@ -289,3 +282,5 @@
     </script>
 </body>
 </html>
+</html>
+
