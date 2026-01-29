@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Valentine v5.1 - Full Life</title>
+    <title>A Letter for Lea</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
 
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            touch-action: manipulation;
-            overflow: hidden;
-            cursor: none;
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            touch-action: manipulation; overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -26,58 +21,98 @@
             100% { background-position: 0% 50%; }
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        /* --- MASSIVE ENVELOPE (500px) --- */
+        #letter-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #571129; display: flex; justify-content: center;
+            align-items: center; z-index: 10000; transition: opacity 1s ease, visibility 1s;
+            cursor: pointer;
         }
 
-        #cursor-glow {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(216, 27, 96, 0.15) 0%, rgba(216, 27, 96, 0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-            transform: translate(-50%, -50%);
+        .envelope {
+            width: 500px; height: 345px;
+            background-color: #d2b48c; border-radius: 6px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            position: relative; overflow: hidden; padding: 35px;
         }
 
-        /* --- BIGGER FLOATING PARTICLES --- */
+        .envelope::before {
+            content: ""; position: absolute; top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-top: 180px solid rgba(0,0,0,0.12);
+            z-index: 1; pointer-events: none;
+        }
+
+        .envelope h2 {
+            font-family: 'Great Vibes', cursive;
+            color: #2d2d2d; font-size: 5rem;
+            margin: 0; z-index: 2; position: relative;
+            text-align: left; line-height: 1.2;
+        }
+
+        /* --- HORIZONTAL "LAYING" STAMPS --- */
+        .stamps-container {
+            position: absolute; bottom: 30px; right: 30px;
+            display: flex; gap: 15px; z-index: 2;
+        }
+
+        .stamp {
+            width: 125px; /* Wider for "Laying" look */
+            height: 90px;  /* Shorter height */
+            background: white; border: 1px solid #ddd;
+            padding: 4px; box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+            display: flex; align-items: center; justify-content: center;
+            background-color: #f9f9f9;
+        }
+
+        .stamp img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: sepia(0.2) contrast(1.1);
+        }
+
+        .stamp.arg { transform: rotate(-5deg); }
+        .stamp.leb { transform: rotate(3deg); }
+
+        .seal {
+            position: absolute; top: 45%; left: 50%;
+            width: 50px; height: 50px; background-color: #b71c1c;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 3;
+        }
+        .seal::before, .seal::after {
+            content: ""; position: absolute; width: 50px; height: 50px;
+            background-color: #b71c1c; border-radius: 50%;
+        }
+        .seal::before { top: -25px; left: 0; }
+        .seal::after { left: 25px; top: 0; }
+
+        /* --- MORE & BRIGHTER PARTICLES --- */
         .particle {
-            position: absolute;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.5;
+            position: absolute; pointer-events: none;
+            z-index: 2; /* Moved above background */
+            opacity: 0.8; /* More "Pop" */
             animation: floatUp 10s linear infinite;
         }
 
         @keyframes floatUp {
             0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
             100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
         }
 
         .memories-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            width: 95%;
-            z-index: 5;
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin-bottom: 25px; width: 95%; z-index: 5;
         }
 
         .baby-photo {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 8px solid black;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            width: 200px; height: 200px; object-fit: cover; border-radius: 50%;
+            border: 8px solid black; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             animation: heartbeat 4s ease-in-out infinite;
         }
 
@@ -88,59 +123,38 @@
 
         .heart-wrapper {
             animation: floating 3s ease-in-out infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
+            display: flex; justify-content: center; align-items: center; pointer-events: none;
         }
 
-        .heart-img {
-            width: 300px;
-            height: auto;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
-        }
+        .heart-img { width: 300px; height: auto; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
 
-        h1 { 
-            color: #ffffff;
-            text-align: center; 
-            font-size: 3.5rem; 
+        h1#main-title { 
+            color: #ffffff; text-align: center; font-size: 3.5rem; 
             background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3s linear infinite;
-            padding: 0 20px;
-            z-index: 10;
+            background-size: 200% auto; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shimmer 3s linear infinite;
+            padding: 0 20px; z-index: 10;
         }
 
-        @keyframes shimmer {
-            to { background-position: 200% center; }
-        }
+        @keyframes shimmer { to { background-position: 200% center; } }
 
         @media (max-width: 600px) {
+            .envelope { width: 95vw; height: 65vw; }
+            .envelope h2 { font-size: 16vw; }
+            .stamp { width: 22vw; height: 16vw; }
             .baby-photo { width: 30vw !important; height: 30vw !important; }
             .heart-img { width: 40vw !important; }
-            h1 { font-size: 8vw !important; }
-            #cursor-glow { width: 250px; height: 250px; }
+            h1#main-title { font-size: 8vw !important; }
         }
 
         .btn-group { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            gap: 30px; 
-            margin-top: 20px;
-            min-height: 200px;
+            display: flex; justify-content: center; align-items: center;
+            gap: 30px; margin-top: 20px; min-height: 200px;
         }
 
         button {
-            padding: 18px 50px;
-            font-size: 26px;
-            cursor: pointer;
-            border-radius: 25px;
-            border: none;
-            color: white;
-            font-weight: bold;
+            padding: 18px 50px; font-size: 26px; cursor: pointer; border-radius: 25px;
+            border: none; color: white; font-weight: bold;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -149,15 +163,12 @@
         #noBtn { background-color: #f44336; position: relative; z-index: 1000; }
 
         .iphone-player {
-            position: fixed;
-            top: 20px; right: 20px; width: 320px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-radius: 24px; padding: 16px;
+            position: fixed; top: 20px; right: 20px; width: 320px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px); border-radius: 24px; padding: 16px;
             display: flex; align-items: center; gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            z-index: 1100; color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 1100; color: white;
         }
 
         #albumArt { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
@@ -170,17 +181,20 @@
             position: fixed; font-size: 35px; pointer-events: none; z-index: 9999;
             animation: explode 1.5s ease-out forwards;
         }
-
-        @keyframes explode {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <div id="cursor-glow"></div>
-    <div id="overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
+    <div id="letter-overlay" onclick="openLetter()">
+        <div class="envelope">
+            <h2>To Lea.</h2>
+            <div class="stamps-container">
+                <div class="stamp arg"><img src="stamp_arg.png" alt="ARG"></div>
+                <div class="stamp leb"><img src="stamp_leb.png" alt="LEB"></div>
+            </div>
+            <div class="seal"></div>
+        </div>
+    </div>
 
     <div class="iphone-player">
         <img id="albumArt" src="album1.jpg" alt="Art">
@@ -205,7 +219,7 @@
         <img src="baby-me.jpg" class="baby-photo" alt="Me">
     </div>
 
-    <h1 id="question">Will you be my Valentine?</h1>
+    <h1 id="main-title">Will you be my Valentine?</h1>
 
     <div class="btn-group">
         <button id="yesBtn">Yes</button>
@@ -217,9 +231,8 @@
         const yesBtn = document.getElementById('yesBtn');
         const splitHeart = document.getElementById('splitHeart');
         const wholeHeart = document.getElementById('wholeHeart');
-        const questionText = document.getElementById('question');
-        const overlay = document.getElementById('overlay');
-        const glow = document.getElementById('cursor-glow');
+        const questionText = document.getElementById('main-title');
+        const letterOverlay = document.getElementById('letter-overlay');
 
         const audio = document.getElementById('mainAudio');
         const playIcon = document.getElementById('playIcon');
@@ -241,49 +254,34 @@
         let noScale = 1;
         audio.volume = 0.3;
 
-        // --- GLOW CURSOR ---
-        document.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
+        function openLetter() {
+            audio.play().catch(() => {});
+            playIcon.innerText = "⏸";
+            letterOverlay.style.opacity = '0';
+            setTimeout(() => { letterOverlay.style.visibility = 'hidden'; }, 1000);
+        }
 
-        // --- BIGGER & INSTANT PARTICLES ---
         const particles = ['✨', '💕', '☁️', '🌸', '❤️'];
         function spawnParticle(isInstant = false) {
             const p = document.createElement('div');
             p.innerHTML = particles[Math.floor(Math.random() * particles.length)];
             p.className = 'particle';
             p.style.left = Math.random() * 100 + 'vw';
-            
-            // Increased Size
-            const size = (Math.random() * 30 + 20) + 'px'; 
-            p.style.fontSize = size;
-            
+            p.style.fontSize = (Math.random() * 35 + 25) + 'px'; // Even bigger particles
             p.style.animationDuration = (Math.random() * 8 + 7) + 's';
-            
-            // If instant, start them at different heights
-            if(isInstant) {
-                p.style.bottom = Math.random() * 100 + 'vh';
-            }
-            
+            if(isInstant) p.style.bottom = Math.random() * 100 + 'vh';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 12000);
         }
 
-        // Spawn 15 particles immediately on load
-        for(let i=0; i<15; i++) { spawnParticle(true); }
-        setInterval(spawnParticle, 700);
+        // Spawn 30 particles immediately for "More Life"
+        for(let i=0; i<30; i++) { spawnParticle(true); }
+        setInterval(spawnParticle, 450); // Increased frequency
 
         window.onload = () => {
             songTitle.innerText = playlist[0].title;
             artistName.innerText = playlist[0].artist;
         };
-
-        overlay.addEventListener('click', () => {
-            audio.play().catch(() => {});
-            playIcon.innerText = "⏸";
-            overlay.style.display = 'none';
-        });
 
         function togglePlay() {
             if (audio.paused) { audio.play(); playIcon.innerText = "⏸"; } 
@@ -304,18 +302,14 @@
             const padding = 60;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
             const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
             const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
-
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
-
             yesScale += 0.3;
             noScale -= 0.1;
             if (noScale < 0.2) noScale = 0.2;
-
             yesBtn.style.transform = `scale(${yesScale})`;
             noBtn.style.transform = `scale(${noScale})`;
         };
@@ -331,7 +325,7 @@
             questionText.style.webkitTextFillColor = "#ffffff";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-            for (let i = 0; i < 60; i++) { createHeart(); }
+            for (let i = 0; i < 70; i++) { createHeart(); } // More celebration hearts!
         });
 
         function createHeart() {
