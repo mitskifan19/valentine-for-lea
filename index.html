@@ -11,7 +11,7 @@
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129); background-size: 400% 400%; animation: grad 15s ease infinite; }
         @keyframes grad { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* --- THE ENVELOPE (Unmasked for iPhone) --- */
+        /* --- THE ENVELOPE (Unmasked) --- */
         #letter-overlay { position: fixed; inset: 0; background-color: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
         .envelope { 
             width: 500px; height: 345px; 
@@ -19,7 +19,7 @@
             border-radius: 6px; 
             box-shadow: 0 50px 100px rgba(0,0,0,0.8); 
             position: relative; 
-            /* REMOVED overflow:hidden to stop iPhone cropping */
+            /* No overflow:hidden so seal stays visible */
         }
         
         .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-top: 180px solid rgba(0,0,0,0.12); z-index: 1; }
@@ -28,23 +28,20 @@
         .stamp { width: 125px; height: 90px; background: white; border: 1px solid #ddd; padding: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
         .stamp img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* --- CLASSIC HEART SEAL (Reverted) --- */
+        /* --- CLASSIC PUFFY SEAL (Reverted) --- */
         .seal {
             position: absolute;
-            top: 160px; /* Adjusted for visual center */
+            top: 160px; 
             left: 50%;
-            width: 50px; 
-            height: 50px;
+            width: 50px; height: 50px;
             background-color: #b71c1c;
             transform: translate(-50%, -50%) rotate(-45deg);
-            z-index: 20; /* High Z-Index to sit on top */
+            z-index: 20; 
             box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .seal::before, .seal::after {
-            content: "";
-            position: absolute;
-            width: 50px; 
-            height: 50px;
+            content: ""; position: absolute;
+            width: 50px; height: 50px;
             background-color: #b71c1c;
             border-radius: 50%;
         }
@@ -68,44 +65,53 @@
         /* --- MAIN CONTENT (Purple Borders) --- */
         .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; }
         
-        /* UPDATED: 5px Light Purple Border */
         .baby-photo { 
             width: 220px; height: 220px; 
             object-fit: cover; border-radius: 50%; 
-            border: 5px solid rgb(73, 77, 152); /* YOUR NEW COLOR */
+            border: 5px solid rgb(73, 77, 152); /* Purple Border */
             animation: heartbeat 4s infinite; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background: white; /* Prevents see-through */
         }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .heart-img { width: 320px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
         h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; }
         @keyframes shim { to { background-position: 200%; } }
 
+        /* --- PARTICLES (Fixed) --- */
+        .particle { 
+            position: absolute; 
+            top: 0; /* CRITICAL FIX: Forces particles to start at top for absolute positioning */
+            pointer-events: none; 
+            z-index: 1; /* Behind photos (10) but in front of bg */
+            opacity: 0.6; 
+            animation: floatUp 10s linear infinite; 
+        }
+        @keyframes floatUp { 
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 
+            20% { opacity: 0.6; } 
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } 
+        }
+
         /* --- MOBILE FIXES --- */
         @media (max-width: 600px) {
             .envelope { width: 92vw; height: 62vw; } .envelope h2 { font-size: 15vw; }
             .envelope::before { border-top-width: 32vw; border-left-width: 46vw; border-right-width: 46vw; }
             
-            /* Mobile seal position */
             .seal { top: 30vw; width: 42px; height: 42px; } 
             .seal::before, .seal::after { width: 42px; height: 42px; }
             .seal::before { top: -21px; } .seal::after { left: 21px; }
 
             .stamp { width: 25vw; height: 18vw; } 
-            
-            /* Safety Sizing for iPhone */
             .memories-container { gap: 2vw; width: 100vw; overflow: hidden; padding: 0 2vw; }
             .baby-photo { width: 25vw !important; height: 25vw !important; flex-shrink: 0; }
             .heart-img { width: 30vw !important; height: auto !important; flex-shrink: 0; }
-            
             h1 { font-size: 8vw !important; } 
             .iphone-player { width: 90vw !important; left: 5vw !important; right: auto !important; top: 15px !important; padding: 15px !important; }
             #sTitle { font-size: 4.5vw !important; } #aName { font-size: 3.5vw !important; }
             .player-controls { font-size: 6vw !important; gap: 20px !important; } #playerArt { width: 15vw !important; height: 15vw !important; }
         }
 
-        .particle { position: absolute; pointer-events: none; z-index: 9999; opacity: 0.6; animation: floatUp 10s linear infinite; }
-        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; } }
         .celeb { position: fixed; font-size: 40px; pointer-events: none; z-index: 20000; animation: ex 1.5s forwards; }
         @keyframes ex { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
     </style>
@@ -157,22 +163,24 @@
         function skip(d) { idx=(idx+d+list.length)%list.length; audio.src=list[idx].f; document.getElementById('sTitle').innerText=list[idx].t; document.getElementById('aName').innerText=list[idx].a; document.getElementById('playerArt').src=list[idx].i; audio.play(); pIcon.innerText="⏸"; }
         function openLetter() { audio.play().catch(()=>{}); pIcon.innerText="⏸"; document.getElementById('letter-overlay').style.opacity='0'; setTimeout(()=>{document.getElementById('letter-overlay').style.visibility='hidden';},1000); }
         
-        function part(ins=false) { 
-            const p = document.createElement('div'); p.innerHTML=['✨','💕','☁️','🌸','❤️'][Math.floor(Math.random()*5)]; p.className='particle'; 
-            p.style.left=Math.random()*100+'vw'; p.style.fontSize=(Math.random()*30+20)+'px'; 
-            if(ins) p.style.bottom=Math.random()*100+'vh'; 
-            document.body.appendChild(p); setTimeout(()=>p.remove(), 12000); 
+        // PARTICLES FIXED: Top 0 + Z-index management
+        function spawnParticle(isInstant = false) { 
+            const p = document.createElement('div'); 
+            p.innerHTML=['✨','💕','☁️','🌸','❤️'][Math.floor(Math.random()*5)]; 
+            p.className='particle'; 
+            p.style.left=Math.random()*100+'vw'; 
+            p.style.fontSize=(Math.random()*30+20)+'px'; 
+            if(isInstant) p.style.bottom=Math.random()*100+'vh'; 
+            document.body.appendChild(p); 
+            setTimeout(()=>p.remove(), 12000); 
         }
-        for(let i=0; i<35; i++) part(true); setInterval(part, 500);
+        for(let i=0; i<35; i++) spawnParticle(true); setInterval(spawnParticle, 600);
 
         const no = document.getElementById('noBtn');
         const move = () => {
             const pad=60, x=Math.max(pad, Math.floor(Math.random()*(window.innerWidth-no.offsetWidth-pad))), y=Math.max(pad, Math.floor(Math.random()*(window.innerHeight-no.offsetHeight-pad)));
             no.style.position='fixed'; no.style.left=x+'px'; no.style.top=y+'px';
-            
-            yS += 0.35; 
-            nS -= 0.12; if(nS < 0.2) nS = 0.2; 
-            
+            yS += 0.35; nS -= 0.12; if(nS < 0.2) nS = 0.2; 
             document.getElementById('yesBtn').style.setProperty('--yS', yS);
             no.style.transform=`scale(${nS})`;
         };
@@ -197,3 +205,5 @@
     </script>
 </body>
 </html>
+</html>
+
