@@ -13,42 +13,20 @@
 
         /* --- THE ENVELOPE --- */
         #letter-overlay { position: fixed; inset: 0; background-color: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
-        
-        .envelope { 
-            width: 500px; height: 345px; 
-            background: #d2b48c; 
-            border-radius: 6px; 
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8); 
-            position: relative; 
-            /* REMOVED overflow:hidden to let heart sit on top */
-        }
-        
-        /* The Flap */
+        .envelope { width: 500px; height: 345px; background: #d2b48c; border-radius: 6px; box-shadow: 0 50px 100px rgba(0,0,0,0.8); position: relative; }
         .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-top: 180px solid rgba(0,0,0,0.12); z-index: 1; }
-        
         .envelope h2 { font-family: 'Great Vibes', cursive; color: #2d2d2d; font-size: 5rem; position: absolute; top: 15px; left: 25px; z-index: 5; margin: 0; line-height: 1; }
         .stamps-container { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 5; }
         .stamp { width: 125px; height: 90px; background: white; border: 1px solid #ddd; padding: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
         .stamp img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* --- RESTORED PUFFY HEART SEAL --- */
+        /* CLASSIC HEART (Force Top) */
         .seal {
-            position: absolute;
-            top: 160px; left: 50%;
-            width: 50px; height: 50px;
-            background-color: #b71c1c;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            z-index: 100; /* Force on top */
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: absolute; top: 160px; left: 50%; width: 50px; height: 50px; background-color: #b71c1c;
+            transform: translate(-50%, -50%) rotate(-45deg); z-index: 100; box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        .seal::before, .seal::after {
-            content: ""; position: absolute;
-            width: 50px; height: 50px;
-            background-color: #b71c1c;
-            border-radius: 50%;
-        }
-        .seal::before { top: -25px; left: 0; }
-        .seal::after { left: 25px; top: 0; }
+        .seal::before, .seal::after { content: ""; position: absolute; width: 50px; height: 50px; background-color: #b71c1c; border-radius: 50%; }
+        .seal::before { top: -25px; left: 0; } .seal::after { left: 25px; top: 0; }
 
         /* --- MUSIC PLAYER --- */
         .iphone-player { position: fixed; top: 20px; right: 20px; width: 300px; background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 20px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; color: white; }
@@ -64,19 +42,28 @@
         #noBtn { background: #f44336; position: relative; z-index: 1000; }
         @keyframes pulseBtn { 0%, 100% { transform: scale(var(--yS, 1)); } 50% { transform: scale(calc(var(--yS, 1) * 1.1)); } }
 
-        /* --- MAIN CONTENT (Circular Shadows Fixed) --- */
+        /* --- MAIN CONTENT (NEW WRAPPER FIX) --- */
         .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; }
         
-        .baby-photo { 
-            width: 220px; height: 220px; 
-            object-fit: cover; 
-            border-radius: 50%; /* STRICT CIRCLE */
-            border: 5px solid rgb(73, 77, 152); 
-            animation: heartbeat 4s infinite; 
+        /* The container handles the shape, border, and shadow perfectly on iOS */
+        .photo-frame {
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 5px solid rgb(73, 77, 152); /* Purple Border */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Perfect circular shadow */
+            overflow: hidden; /* Clips the image inside */
+            animation: heartbeat 4s infinite;
             background: white;
-            /* REVERTED TO BOX-SHADOW FOR CIRCULAR SUPPORT */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            position: relative;
         }
+        
+        /* The image just fills the container */
+        .photo-frame img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .heart-img { width: 320px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
         h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; }
@@ -91,18 +78,18 @@
             .envelope { width: 92vw; height: 62vw; } .envelope h2 { font-size: 15vw; }
             .envelope::before { border-top-width: 32vw; border-left-width: 46vw; border-right-width: 46vw; }
             
-            /* Mobile Seal Positioning */
             .seal { top: 30vw; width: 42px; height: 42px; } 
             .seal::before, .seal::after { width: 42px; height: 42px; }
             .seal::before { top: -21px; } .seal::after { left: 21px; }
 
             .stamp { width: 25vw; height: 18vw; } 
             
-            /* iPhone Safety Widths */
-            .memories-container { gap: 2vw; width: 100vw; overflow: hidden; padding: 0 2vw; }
-            .baby-photo { width: 25vw !important; height: 25vw !important; border-width: 3px !important; flex-shrink: 0; }
-            .heart-img { width: 30vw !important; height: auto !important; flex-shrink: 0; }
+            .memories-container { gap: 2vw; width: 100vw; padding: 0 2vw; }
             
+            /* Apply Mobile sizes to the FRAME, not the image */
+            .photo-frame { width: 25vw !important; height: 25vw !important; border-width: 3px !important; flex-shrink: 0; }
+            
+            .heart-img { width: 30vw !important; height: auto !important; flex-shrink: 0; }
             h1 { font-size: 8vw !important; } 
             .iphone-player { width: 90vw !important; left: 5vw !important; right: auto !important; top: 15px !important; padding: 15px !important; }
             #sTitle { font-size: 4.5vw !important; } #aName { font-size: 3.5vw !important; }
@@ -137,12 +124,18 @@
     </div>
 
     <div class="memories-container">
-        <img src="baby-her.jpg" class="baby-photo">
+        <div class="photo-frame">
+            <img src="baby-her.jpg" alt="Her">
+        </div>
+        
         <div style="animation: floating 3s infinite; display:flex; justify-content:center; align-items:center;">
             <img id="sh" src="heart-split.png" style="width:100%; height:auto;">
             <img id="wh" src="heart-whole.png" style="display:none; width:100%; height:auto;">
         </div>
-        <img src="baby-me.jpg" class="baby-photo">
+        
+        <div class="photo-frame">
+            <img src="baby-me.jpg" alt="Me">
+        </div>
     </div>
 
     <h1 id="mTitle">Will you be my Valentine?</h1>
@@ -172,7 +165,6 @@
         const move = () => {
             const pad=60, x=Math.max(pad, Math.floor(Math.random()*(window.innerWidth-no.offsetWidth-pad))), y=Math.max(pad, Math.floor(Math.random()*(window.innerHeight-no.offsetHeight-pad)));
             no.style.position='fixed'; no.style.left=x+'px'; no.style.top=y+'px';
-            
             yS += 0.35; nS -= 0.12; if(nS < 0.2) nS = 0.2; 
             document.getElementById('yesBtn').style.setProperty('--yS', yS);
             no.style.transform=`scale(${nS})`;
