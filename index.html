@@ -23,7 +23,7 @@
 
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
-        /* --- MASSIVE ENVELOPE (500px) --- */
+        /* --- ENVELOPE (iPhone Optimized) --- */
         #letter-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #571129; display: flex; justify-content: center;
@@ -35,7 +35,7 @@
             width: 500px; height: 345px;
             background-color: #d2b48c; border-radius: 6px;
             box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            position: relative; overflow: hidden; padding: 35px;
+            position: relative; overflow: hidden;
         }
 
         .envelope::before {
@@ -47,41 +47,37 @@
             z-index: 1; pointer-events: none;
         }
 
+        /* FIXED POSITIONING FOR TO LEA */
         .envelope h2 {
             font-family: 'Great Vibes', cursive;
             color: #2d2d2d; font-size: 5rem;
-            margin: 0; z-index: 2; position: relative;
-            text-align: left; line-height: 1.2;
+            margin: 0; z-index: 5; 
+            position: absolute; /* Pinned to top left */
+            top: 20px; left: 30px;
+            line-height: 1;
         }
 
-        /* --- HORIZONTAL "LAYING" STAMPS --- */
         .stamps-container {
-            position: absolute; bottom: 30px; right: 30px;
-            display: flex; gap: 15px; z-index: 2;
+            position: absolute; bottom: 20px; right: 20px;
+            display: flex; gap: 15px; z-index: 5;
         }
 
         .stamp {
-            width: 125px; /* Wider for "Laying" look */
-            height: 90px;  /* Shorter height */
+            width: 125px; height: 90px;
             background: white; border: 1px solid #ddd;
             padding: 4px; box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
-            background-color: #f9f9f9;
         }
 
-        .stamp img {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: sepia(0.2) contrast(1.1);
-        }
-
+        .stamp img { width: 100%; height: 100%; object-fit: cover; }
         .stamp.arg { transform: rotate(-5deg); }
         .stamp.leb { transform: rotate(3deg); }
 
         .seal {
-            position: absolute; top: 45%; left: 50%;
+            position: absolute; bottom: 40px; left: 50%;
             width: 50px; height: 50px; background-color: #b71c1c;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 3;
+            transform: translateX(-50%) rotate(-45deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 6;
         }
         .seal::before, .seal::after {
             content: ""; position: absolute; width: 50px; height: 50px;
@@ -90,24 +86,45 @@
         .seal::before { top: -25px; left: 0; }
         .seal::after { left: 25px; top: 0; }
 
-        /* --- MORE & BRIGHTER PARTICLES --- */
+        /* --- CELEBRATION EFFECTS --- */
         .particle {
             position: absolute; pointer-events: none;
-            z-index: 2; /* Moved above background */
-            opacity: 0.8; /* More "Pop" */
+            z-index: 2; opacity: 0.8;
             animation: floatUp 10s linear infinite;
         }
 
         @keyframes floatUp {
             0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
             20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
             100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
         }
 
+        .floating-heart {
+            position: fixed; font-size: 40px; pointer-events: none;
+            z-index: 20000; /* Extremely high z-index to ensure visibility */
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+        /* Success Flash */
+        .success-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; z-index: 15000; pointer-events: none;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* --- CONTENT LAYOUT --- */
         .memories-container {
             display: flex; align-items: center; justify-content: center;
-            gap: 15px; margin-bottom: 25px; width: 95%; z-index: 5;
+            gap: 15px; margin-bottom: 25px; width: 95%; z-index: 10;
         }
 
         .baby-photo {
@@ -133,27 +150,34 @@
             background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60);
             background-size: 200% auto; -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; animation: shimmer 3s linear infinite;
-            padding: 0 20px; z-index: 10;
+            padding: 0 20px; z-index: 15;
         }
 
         @keyframes shimmer { to { background-position: 200% center; } }
 
+        /* IPHONE SPECIFIC SCALING */
         @media (max-width: 600px) {
-            .envelope { width: 95vw; height: 65vw; }
-            .envelope h2 { font-size: 16vw; }
-            .stamp { width: 22vw; height: 16vw; }
-            .baby-photo { width: 30vw !important; height: 30vw !important; }
-            .heart-img { width: 40vw !important; }
-            h1#main-title { font-size: 8vw !important; }
+            .envelope { width: 92vw; height: 60vw; }
+            .envelope h2 { font-size: 14vw; top: 10px; left: 15px; }
+            .stamp { width: 20vw; height: 15vw; }
+            .seal { width: 35px; height: 35px; bottom: 20px; }
+            .seal::before, .seal::after { width: 35px; height: 35px; }
+            .seal::before { top: -17px; }
+            .seal::after { left: 17px; }
+            
+            .baby-photo { width: 28vw !important; height: 28vw !important; border-width: 4px !important; }
+            .heart-img { width: 38vw !important; }
+            h1#main-title { font-size: 7vw !important; }
+            .iphone-player { width: 220px !important; transform: scale(0.9); top: 5px !important; right: 5px !important; }
         }
 
         .btn-group { 
             display: flex; justify-content: center; align-items: center;
-            gap: 30px; margin-top: 20px; min-height: 200px;
+            gap: 25px; margin-top: 20px; min-height: 180px;
         }
 
         button {
-            padding: 18px 50px; font-size: 26px; cursor: pointer; border-radius: 25px;
+            padding: 15px 40px; font-size: 22px; cursor: pointer; border-radius: 20px;
             border: none; color: white; font-weight: bold;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -164,26 +188,23 @@
 
         .iphone-player {
             position: fixed; top: 20px; right: 20px; width: 320px;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px); border-radius: 24px; padding: 16px;
-            display: flex; align-items: center; gap: 15px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); border-radius: 20px; padding: 12px;
+            display: flex; align-items: center; gap: 12px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 1100; color: white;
         }
 
-        #albumArt { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
+        #albumArt { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; }
         .song-info { flex-grow: 1; overflow: hidden; }
-        #songTitle { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #artistName { font-size: 14px; opacity: 0.8; }
-        .player-controls { display: flex; gap: 12px; font-size: 24px; cursor: pointer; user-select: none; }
-
-        .floating-heart {
-            position: fixed; font-size: 35px; pointer-events: none; z-index: 9999;
-            animation: explode 1.5s ease-out forwards;
-        }
+        #songTitle { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #artistName { font-size: 12px; opacity: 0.8; }
+        .player-controls { display: flex; gap: 10px; font-size: 20px; cursor: pointer; user-select: none; }
     </style>
 </head>
 <body>
+
+    <div id="flash" class="success-flash"></div>
 
     <div id="letter-overlay" onclick="openLetter()">
         <div class="envelope">
@@ -211,12 +232,12 @@
     </div>
 
     <div class="memories-container">
-        <img src="baby-her.jpg" class="baby-photo" alt="Her">
+        <img src="baby-her.jpg" class="baby-photo" id="herPhoto" alt="Her">
         <div class="heart-wrapper">
             <img id="splitHeart" src="heart-split.png" class="heart-img" alt="Broken Heart">
             <img id="wholeHeart" src="heart-whole.png" style="display:none;" class="heart-img" alt="Whole Heart">
         </div>
-        <img src="baby-me.jpg" class="baby-photo" alt="Me">
+        <img src="baby-me.jpg" class="baby-photo" id="mePhoto" alt="Me">
     </div>
 
     <h1 id="main-title">Will you be my Valentine?</h1>
@@ -233,6 +254,7 @@
         const wholeHeart = document.getElementById('wholeHeart');
         const questionText = document.getElementById('main-title');
         const letterOverlay = document.getElementById('letter-overlay');
+        const flash = document.getElementById('flash');
 
         const audio = document.getElementById('mainAudio');
         const playIcon = document.getElementById('playIcon');
@@ -267,16 +289,15 @@
             p.innerHTML = particles[Math.floor(Math.random() * particles.length)];
             p.className = 'particle';
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = (Math.random() * 35 + 25) + 'px'; // Even bigger particles
+            p.style.fontSize = (Math.random() * 30 + 20) + 'px';
             p.style.animationDuration = (Math.random() * 8 + 7) + 's';
             if(isInstant) p.style.bottom = Math.random() * 100 + 'vh';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 12000);
         }
 
-        // Spawn 30 particles immediately for "More Life"
-        for(let i=0; i<30; i++) { spawnParticle(true); }
-        setInterval(spawnParticle, 450); // Increased frequency
+        for(let i=0; i<25; i++) { spawnParticle(true); }
+        setInterval(spawnParticle, 600);
 
         window.onload = () => {
             songTitle.innerText = playlist[0].title;
@@ -307,8 +328,8 @@
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
-            yesScale += 0.3;
-            noScale -= 0.1;
+            yesScale += 0.35;
+            noScale -= 0.12;
             if (noScale < 0.2) noScale = 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
             noBtn.style.transform = `scale(${noScale})`;
@@ -317,7 +338,9 @@
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
         noBtn.addEventListener('mouseover', moveButton);
 
+        // --- ENHANCED YES CELEBRATION ---
         yesBtn.addEventListener('click', () => {
+            // 1. Visual Swaps
             splitHeart.style.display = 'none';
             wholeHeart.style.display = 'block';
             questionText.innerText = "I love you Lea! ❤️";
@@ -325,15 +348,27 @@
             questionText.style.webkitTextFillColor = "#ffffff";
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
-            for (let i = 0; i < 70; i++) { createHeart(); } // More celebration hearts!
+
+            // 2. Celebration Flash & Hyper-Background
+            flash.style.animation = "flashEffect 0.5s ease-out forwards";
+            document.body.style.animation = "gradientBG 2s ease infinite"; // Fast background
+
+            // 3. Massive Burst of Everything
+            const celebIcons = ['💕', '💖', '🎉', '🎆', '🥂', '✨', '❤️'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const icon = celebIcons[Math.floor(Math.random() * celebIcons.length)];
+                    createCelebration(icon);
+                }, i * 20);
+            }
         });
 
-        function createHeart() {
+        function createCelebration(icon) {
             const heart = document.createElement('div');
-            heart.innerHTML = '💕';
+            heart.innerHTML = icon;
             heart.className = 'floating-heart';
-            const x = (Math.random() - 0.5) * 1000;
-            const y = (Math.random() - 0.5) * 1000;
+            const x = (Math.random() - 0.5) * window.innerWidth * 1.5;
+            const y = (Math.random() - 0.5) * window.innerHeight * 1.5;
             heart.style.setProperty('--x', x + 'px');
             heart.style.setProperty('--y', y + 'px');
             heart.style.left = '50%';
