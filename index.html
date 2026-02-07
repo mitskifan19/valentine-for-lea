@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>A Letter for Lea</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #571129; touch-action: manipulation; overflow: hidden; }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129); background-size: 400% 400%; animation: grad 15s ease infinite; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #571129; touch-action: manipulation; overflow: hidden; font-family: 'Cormorant Garamond', serif; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(-45deg, #40081b, #571129, #800020, #571129); background-size: 400% 400%; animation: grad 15s ease infinite; color: #fff; }
         @keyframes grad { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* --- THE ENVELOPE --- */
+        /* --- UTILITIES --- */
+        .hidden { display: none !important; opacity: 0; pointer-events: none; }
+        .fade-in { animation: fadeIn 1.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- STAGE 1 --- */
         #letter-overlay { position: fixed; inset: 0; background-color: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
         .envelope { width: 500px; height: 345px; background: #d2b48c; border-radius: 6px; box-shadow: 0 50px 100px rgba(0,0,0,0.8); position: relative; }
         .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-top: 180px solid rgba(0,0,0,0.12); z-index: 1; }
@@ -19,85 +24,136 @@
         .stamps-container { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 5; }
         .stamp { width: 125px; height: 90px; background: white; border: 1px solid #ddd; padding: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
         .stamp img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* CLASSIC HEART (Force Top) */
-        .seal {
-            position: absolute; top: 160px; left: 50%; width: 50px; height: 50px; background-color: #b71c1c;
-            transform: translate(-50%, -50%) rotate(-45deg); z-index: 100; box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+        .seal { position: absolute; top: 160px; left: 50%; width: 50px; height: 50px; background-color: #b71c1c; transform: translate(-50%, -50%) rotate(-45deg); z-index: 100; box-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .seal::before, .seal::after { content: ""; position: absolute; width: 50px; height: 50px; background-color: #b71c1c; border-radius: 50%; }
         .seal::before { top: -25px; left: 0; } .seal::after { left: 25px; top: 0; }
 
-        /* --- MUSIC PLAYER --- */
-        .iphone-player { position: fixed; top: 20px; right: 20px; width: 300px; background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 20px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; color: white; }
+        .iphone-player { position: fixed; top: 20px; right: 20px; width: 300px; background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); border-radius: 20px; padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; color: white; transition: all 0.5s ease; }
+        .iphone-player.minimized { width: 50px; height: 50px; padding: 0; justify-content: center; overflow: hidden; opacity: 0.5; }
+        .iphone-player.minimized * { display: none; }
         #playerArt { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
         #sTitle { font-weight: 700; font-size: 16px; white-space: nowrap; }
         #aName { font-size: 14px; opacity: 0.8; }
         .player-controls { display: flex; gap: 15px; font-size: 24px; cursor: pointer; user-select: none; }
 
-        /* --- BUTTONS --- */
+        .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; }
+        .photo-frame { width: 220px; height: 220px; border-radius: 50%; border: 5px solid rgb(73, 77, 152); box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; animation: heartbeat 4s infinite; background: white; position: relative; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; font-family: 'Great Vibes', cursive; }
+        @keyframes shim { to { background-position: 200%; } }
+
         .btn-group { display: flex; justify-content: center; align-items: center; gap: 25px; margin-top: 20px; min-height: 220px; z-index: 100; }
-        button { padding: 15px 45px; font-size: 24px; cursor: pointer; border-radius: 20px; border: none; color: white; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.4); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        button { padding: 15px 45px; font-size: 24px; cursor: pointer; border-radius: 20px; border: none; color: white; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.4); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: 'Cormorant Garamond', serif; }
         #yesBtn { background: #4caf50; transform: scale(var(--yS, 1)); animation: pulseBtn 1.5s infinite; }
         #noBtn { background: #f44336; position: relative; z-index: 1000; }
         @keyframes pulseBtn { 0%, 100% { transform: scale(var(--yS, 1)); } 50% { transform: scale(calc(var(--yS, 1) * 1.1)); } }
-
-        /* --- MAIN CONTENT (NEW WRAPPER FIX) --- */
-        .memories-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; z-index: 10; width: 100%; }
         
-        /* The container handles the shape, border, and shadow perfectly on iOS */
-        .photo-frame {
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            border: 5px solid rgb(73, 77, 152); /* Purple Border */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Perfect circular shadow */
-            overflow: hidden; /* Clips the image inside */
-            animation: heartbeat 4s infinite;
-            background: white;
-            position: relative;
-        }
-        
-        /* The image just fills the container */
-        .photo-frame img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .heart-img { width: 320px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
-        h1 { color: #fff; text-align: center; font-size: 3.5rem; background: linear-gradient(to right, #d81b60, #fce4ec, #d81b60); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shim 3s linear infinite; padding: 0 20px; z-index: 15; }
-        @keyframes shim { to { background-position: 200%; } }
-
-        /* --- PARTICLES --- */
         .particle { position: absolute; top: 0; pointer-events: none; z-index: 1; opacity: 0.6; animation: floatUp 10s linear infinite; }
         @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 20% { opacity: 0.6; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+        .celeb { position: fixed; font-size: 40px; pointer-events: none; z-index: 20000; animation: ex 1.5s forwards; }
+        @keyframes ex { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+        #next-stage-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(5px); margin-top: 20px; animation: fadeIn 2s forwards; }
 
-        /* --- MOBILE FIXES --- */
+        /* --- STAGE 2: THE MENU --- */
+        #flower-menu { 
+            position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2000;
+            background: rgba(87, 17, 41, 0.95);
+            display: flex; flex-direction: column !important; align-items: center; justify-content: center; padding: 20px;
+        }
+        .menu-title { font-size: 2rem; margin-bottom: 30px; font-style: italic; text-align: center; color: white; }
+        .menu-options { display: flex; flex-direction: column !important; gap: 15px; width: 100%; max-width: 400px; }
+        .menu-btn { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 20px; font-size: 1.3rem; color: white; border-radius: 10px; }
+
+        /* --- STAGE 3: THE FINAL REVEAL --- */
+        #final-display { 
+            position: fixed; inset: 0; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            text-align: center; z-index: 3000; padding: 20px; overflow-y: auto; 
+            background: #571129; 
+        }
+#final-display {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+#flower-display-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.flower-container {
+    margin: 0 auto 20px auto;
+}
+
+.flower-img {
+    position: absolute;
+    inset: 8%;                 /* inner margin from frame */
+    width: 84%;
+    height: 84%;
+    object-fit: cover;         /* 🔑 THIS is the fix */
+    background: white;
+    z-index: 1;
+}
+
+
+        .flower-container { 
+            position: relative; 
+            width: 320px; height: 420px; 
+            flex-shrink: 0; margin-bottom: 20px; 
+            background-color: transparent !important; 
+            box-shadow: none !important;
+            padding: 0;
+            /* Flexbox removed here to use Absolute Positioning for child */
+            display: block; 
+        }
+#flower-display-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+        .frame-overlay {
+            position: absolute; inset: 0; z-index: 10;
+            background-image: url('frame.png'); 
+            background-size: 100% 100%; pointer-events: none;
+        }
+
+        /* --- FIXED FLOWER CENTERING --- */
+        .flower-img { 
+            position: absolute;  /* Absolute allows precise coordinates */
+            top: 50%; 
+            left: 50%;
+            /* This shifts the image exactly to the center */
+            transform: translate(-50%, -50%);
+            
+            width: 78%; /* Slightly smaller to ensure it doesn't touch frame */
+            height: 78%; 
+            
+            object-fit: contain; 
+            background-color: white; 
+            opacity: 1; 
+            z-index: 1; 
+        }
+
+        .flower-meaning { font-size: 1.6rem; font-style: italic; margin-bottom: 30px; max-width: 600px; color: #ffcccb; text-shadow: 0 2px 4px rgba(0,0,0,0.5); opacity: 0; animation: fadeIn 2s forwards 0.5s; position: relative; z-index: 40; }
+        .master-letter { font-size: 1.2rem; line-height: 1.6; max-width: 600px; background: rgba(0,0,0,0.5); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(10px); opacity: 0; animation: fadeIn 2s forwards 2.5s; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .highlight { color: #fff; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.4); }
+
+        /* Mobile */
         @media (max-width: 600px) {
             .envelope { width: 92vw; height: 62vw; } .envelope h2 { font-size: 15vw; }
-            .envelope::before { border-top-width: 32vw; border-left-width: 46vw; border-right-width: 46vw; }
-            
-            .seal { top: 30vw; width: 42px; height: 42px; } 
-            .seal::before, .seal::after { width: 42px; height: 42px; }
-            .seal::before { top: -21px; } .seal::after { left: 21px; }
-
-            .stamp { width: 25vw; height: 18vw; } 
-            
+            .seal { top: 30vw; width: 42px; height: 42px; } .seal::before, .seal::after { width: 42px; height: 42px; } .seal::before { top: -21px; } .seal::after { left: 21px; }
             .memories-container { gap: 2vw; width: 100vw; padding: 0 2vw; }
-            
-            /* Apply Mobile sizes to the FRAME, not the image */
             .photo-frame { width: 25vw !important; height: 25vw !important; border-width: 3px !important; flex-shrink: 0; }
-            
             .heart-img { width: 30vw !important; height: auto !important; flex-shrink: 0; }
             h1 { font-size: 8vw !important; } 
             .iphone-player { width: 90vw !important; left: 5vw !important; right: auto !important; top: 15px !important; padding: 15px !important; }
-            #sTitle { font-size: 4.5vw !important; } #aName { font-size: 3.5vw !important; }
-            .player-controls { font-size: 6vw !important; gap: 20px !important; } #playerArt { width: 15vw !important; height: 15vw !important; }
         }
-
-        .celeb { position: fixed; font-size: 40px; pointer-events: none; z-index: 20000; animation: ex 1.5s forwards; }
-        @keyframes ex { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -123,30 +179,56 @@
         <audio id="mainAudio" src="song1.mp3"></audio>
     </div>
 
-    <div class="memories-container">
-        <div class="photo-frame">
-            <img src="baby-her.jpg" alt="Her">
+    <div id="stage1-container" style="width: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 1s;">
+        <div class="memories-container">
+            <div class="photo-frame"><img src="baby-her.jpg" alt="Her"></div>
+            <div style="animation: floating 3s infinite; display:flex; justify-content:center; align-items:center;">
+                <img id="sh" src="heart-split.png" style="width:100%; height:auto; max-width: 320px;">
+                <img id="wh" src="heart-whole.png" style="display:none; width:100%; height:auto; max-width: 320px;">
+            </div>
+            <div class="photo-frame"><img src="baby-me.jpg" alt="Me"></div>
         </div>
-        
-        <div style="animation: floating 3s infinite; display:flex; justify-content:center; align-items:center;">
-            <img id="sh" src="heart-split.png" style="width:100%; height:auto;">
-            <img id="wh" src="heart-whole.png" style="display:none; width:100%; height:auto;">
+        <h1 id="mTitle">Will you be my Valentine?</h1>
+        <div class="btn-group" id="mainBtns">
+            <button id="yesBtn" onclick="celebrate()">Yes</button>
+            <button id="noBtn">No</button>
         </div>
-        
-        <div class="photo-frame">
-            <img src="baby-me.jpg" alt="Me">
+        <button id="next-stage-btn" class="hidden" onclick="goToStage2()">I have one more thing...</button>
+    </div>
+
+    <div id="flower-menu" class="hidden">
+        <div class="menu-title">I want to send you the right blooms.<br>Which one feels like you today?</div>
+        <div class="menu-options">
+            <button class="menu-btn" onclick="chooseFlower('rose')">Something Deep & Crimson</button>
+            <button class="menu-btn" onclick="chooseFlower('sunflower')">Something Bright & Radiant</button>
+            <button class="menu-btn" onclick="chooseFlower('grace')">Something Gentle & Graceful</button>
+            <button class="menu-btn" onclick="chooseFlower('garden')">I Can't Decide...</button>
         </div>
     </div>
 
-    <h1 id="mTitle">Will you be my Valentine?</h1>
-    <div class="btn-group">
-        <button id="yesBtn" onclick="celebrate()">Yes</button>
-        <button id="noBtn">No</button>
+    <div id="final-display" class="hidden">
+        <div id="flower-display-container"></div>
+        <div class="master-letter">
+            "Consider this a digital placeholder for the flowers I intend to one day place in your hands.
+            <br><br>
+            Until the geography aligns with our intentions, accept this as a witness to a devotion that is not diminished by the miles, but defined by them.
+            <br><br>
+            <span class="highlight">In a life full of variables, you remain the only conclusion my heart ever reaches.</span>
+            <br><br>
+            I am yours today, and every day."
+        </div>
     </div>
 
     <script>
         const audio = document.getElementById('mainAudio'), pIcon = document.getElementById('pIcon');
-        const list = [{t:"Loving Machine", a:"Tv Girl", f:"song1.mp3", i:"album1.jpg"}, {t:"What Once Was", a:"Her's", f:"song2.mp3", i:"album2.jpg"}, {t:"My Kind of Woman", a:"Mac DeMarco", f:"song3.mp3", i:"album3.jpg"}, {t:"Message in a bottle", a:"Taylor Swift", f:"song4.mp3", i:"album4.jpg"}, {t:"You rock my world leaa", a:"Michael Jackson", f:"song5.mp3", i:"album5.jpg"}, {t:"Is it love??", a:"Color out", f:"song6.mp3", i:"album6.jpg"}];
+        const list = [
+            {t:"Loving Machine", a:"Tv Girl", f:"song1.mp3", i:"album1.jpg"},
+            {t:"What Once Was", a:"Her's", f:"song2.mp3", i:"album2.jpg"},
+            {t:"My Kind of Woman", a:"Mac DeMarco", f:"song3.mp3", i:"album3.jpg"},
+            {t:"Message in a bottle", a:"Taylor Swift", f:"song4.mp3", i:"album4.jpg"},
+            {t:"You rock my world leaa", a:"Michael Jackson", f:"song5.mp3", i:"album5.jpg"},
+            {t:"Is it love??", a:"Color out", f:"song6.mp3", i:"album6.jpg"}
+        ];
         let idx = 0, yS = 1, nS = 1; audio.volume = 0.3;
 
         function toggle() { if(audio.paused) { audio.play(); pIcon.innerText = "⏸"; } else { audio.pause(); pIcon.innerText = "▶"; } }
@@ -176,6 +258,7 @@
             document.getElementById('mTitle').innerText="I love you Lea! ❤️"; document.getElementById('mTitle').style.webkitTextFillColor="#fff"; 
             document.getElementById('yesBtn').style.display='none'; no.style.display='none';
             document.getElementById('flash').style.animation="flashEffect 0.6s forwards"; document.body.style.animation="grad 1.5s infinite";
+            
             const icons=['💕','💖','🎆','🎉','🥂','🍾','💘','✨','❤️'];
             for(let i=0; i<130; i++) { 
                 setTimeout(() => { 
@@ -186,9 +269,69 @@
                     setTimeout(()=>el.remove(), 1500); 
                 }, i*12); 
             }
+            setTimeout(() => {
+                const nextBtn = document.getElementById('next-stage-btn');
+                nextBtn.classList.remove('hidden');
+                nextBtn.classList.add('fade-in');
+            }, 2000);
+        }
+
+        function goToStage2() {
+            const s1 = document.getElementById('stage1-container');
+            s1.style.opacity = '0';
+            setTimeout(() => {
+                s1.classList.add('hidden');
+                const s2 = document.getElementById('flower-menu');
+                s2.classList.remove('hidden');
+                s2.classList.add('fade-in');
+            }, 1000);
+            document.querySelector('.iphone-player').classList.add('minimized');
+        }
+
+        function chooseFlower(type) {
+            const menu = document.getElementById('flower-menu');
+            menu.style.opacity = '0';
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                const finalStage = document.getElementById('final-display');
+                finalStage.classList.remove('hidden');
+                finalStage.classList.add('fade-in');
+                renderFlowerContent(type);
+            }, 800);
+        }
+
+       function renderFlowerContent(type) {
+            const container = document.getElementById('flower-display-container');
+            let flowerHtml = '';
+            let text = '';
+
+            if (type === 'rose') {
+                flowerHtml = `<img src="rose.jpg" class="flower-img" alt="Rose">`;
+                text = `You chose the classic.<br>Red is the color of the heart for a reason. And mine has been yours since the moment we met`;
+            } 
+            else if (type === 'grace') {
+                flowerHtml = `<img src="purple.jpg" class="flower-img" alt="Purple">`;
+               text = `You chose the truth.<br>There are a lot of questions in life, but you are the one answer I'm sure of.`;
+            } 
+            else if (type === 'sunflower') {
+                flowerHtml = `<img src="sun.jpg" class="flower-img" alt="Sunflower">`;
+                text = `You chose the light.<br>Just as the sunflower instinctively turns toward the sun, my mind instinctively turns to you.`;
+            }
+           else if (type === 'garden') {
+     flowerHtml = `<img src="bouquet.jpg" class="flower-img bouquet" alt="Bouquet">`;
+    text = `You chose them all.<br>Why settle for one feeling when you give me all of them?`;
+}
+
+
+            container.innerHTML = `
+                <div class="flower-container">
+                    <div class="frame-overlay"></div>
+                    ${flowerHtml}
+                </div>
+                <div class="flower-meaning">${text}</div>
+            `;
         }
     </script>
 </body>
 </html>
-
 
