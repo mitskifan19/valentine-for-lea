@@ -19,7 +19,15 @@
         /* --- STAGE 1 --- */
         #letter-overlay { position: fixed; inset: 0; background-color: #571129; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s, visibility 1s; cursor: pointer; }
         .envelope { width: 500px; height: 345px; background: #d2b48c; border-radius: 6px; box-shadow: 0 50px 100px rgba(0,0,0,0.8); position: relative; }
-        .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-top: 180px solid rgba(0,0,0,0.12); z-index: 1; }
+        .envelope::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.12);
+    clip-path: polygon(0 0, 100% 0, 50% 52%);
+    z-index: 1;
+}
+
         .envelope h2 { font-family: 'Great Vibes', cursive; color: #2d2d2d; font-size: 5rem; position: absolute; top: 15px; left: 25px; z-index: 5; margin: 0; line-height: 1; }
         .stamps-container { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 5; }
         .stamp { width: 125px; height: 90px; background: white; border: 1px solid #ddd; padding: 4px; box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
@@ -336,6 +344,7 @@
     </script>
 </body>
 </html>
+
 
 
 
